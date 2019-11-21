@@ -26,6 +26,15 @@ public class MainActivity extends AppCompatActivity {
     // For a production app, a more efficient way to the register and unregister the receiver
     // might be to use the onResume() and onPause() calls.
 
+    private long resumeTime;
+
+    @Override
+    protected void onResume(){
+
+        resumeTime = System.currentTimeMillis();
+        super.onResume();
+    }
+
     // Note: If DataWedge had been configured to start an activity (instead of a broadcast),
     // the intent could be handled in the app's manifest by calling getIntent() in onCreate().
     // If configured as startService, then a service must be created to receive the intent.
@@ -84,6 +93,8 @@ public class MainActivity extends AppCompatActivity {
     //
     private void displayScanResult(Intent initiatingIntent, String howDataReceived)
     {
+        long difference = System.currentTimeMillis() - resumeTime;
+
         String decodedSource = initiatingIntent.getStringExtra(getResources().getString(R.string.datawedge_intent_key_source));
         String decodedData = initiatingIntent.getStringExtra(getResources().getString(R.string.datawedge_intent_key_data));
         String decodedLabelType = initiatingIntent.getStringExtra(getResources().getString(R.string.datawedge_intent_key_label_type));
@@ -92,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         final TextView lblScanData = (TextView) findViewById(R.id.lblScanData);
         final TextView lblScanLabelType = (TextView) findViewById(R.id.lblScanDecoder);
 
-        lblScanSource.setText(decodedSource + " " + howDataReceived);
+        lblScanSource.setText(decodedSource + " " + howDataReceived + " onresume-scan: " + difference/1000 + "s");
         lblScanData.setText(decodedData);
         lblScanLabelType.setText(decodedLabelType);
     }
